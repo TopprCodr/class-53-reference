@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, Text, View, TextInput, ScrollView } from 'react-native';
+import { StyleSheet, Text, View, TextInput, ActivityIndicator, ScrollView } from 'react-native';
 import BasicButton from './BasicButton';
 import LoginSignUpBtn from './LoginSignUpBtn';
 import { Picker } from '@react-native-picker/picker';
@@ -17,6 +17,7 @@ export default class SignUp extends ValidationComponent {
       ageGroup: '',
       password: '',
       confirmPassword: '',
+      isLoading: false,
       snackBarVisible: false,
       snackBarType: "",
       snackBarText: "",
@@ -39,6 +40,8 @@ export default class SignUp extends ValidationComponent {
 
   //function to handle when signup btn is clicked on
   handleRegisterBtnClick = () => {
+    this.displayLoader();
+
     //validating fields using 3rd party library
     this.validate({
       name: { minlength: 3, maxlength: 25, required: true },
@@ -57,6 +60,10 @@ export default class SignUp extends ValidationComponent {
           this.playAudio();
           this.displaySnackBar("success", "Login Clicked!");
       }
+      setTimeout(()=>{
+        this.hideLoader();
+      },1000);
+      
 
   };
 
@@ -78,6 +85,21 @@ hideSnackBar = () => {
   });
 }
  
+  //function to toogle loading bar
+  displayLoader = () => {
+    console.log("diaplyed loader");
+    this.setState({
+        isLoading: true,
+    });
+}
+
+hideLoader = () => {
+    console.log("hidden loader");
+    this.setState({
+        isLoading: false,
+    });
+}
+
 
   //function to handle when sign in btn is clicked on
   handleSignInBtnClick() {
@@ -153,6 +175,12 @@ hideSnackBar = () => {
 
         
         <ORDivider />
+        {
+                        this.state.isLoading ?
+                            <ActivityIndicator style={styles.loader} />
+                            : null
+                    }
+
         <LoginSignUpBtn
           customStyle={styles.signin}
           text="Already have an account?"
